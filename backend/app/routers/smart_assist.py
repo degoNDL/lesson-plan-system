@@ -17,7 +17,7 @@ request_schema = SmartAssistRequestSchema()
 
 @bp.post("/")
 def recommend():
-    json_data = request.get_json()
+    json_data = request.get_json(silent=True, force=True)
     if not json_data:
         return jsonify({"error": "Dados não fornecidos."}), 400
 
