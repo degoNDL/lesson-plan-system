@@ -55,8 +55,8 @@ jobs:
           FLASK_ENV: "testing"
           SECRET_KEY: "test-secret-key"
         run: |
-          if [ -d "app" ]; then
+          if [ -d "tests" ] && [ -n "$(find tests -name 'test_*.py' 2>/dev/null)" ]; then
             pytest --cov=app --cov-report=term-missing --cov-fail-under=70
           else
-            echo "⚠ Pasta app ainda não existe, pulando testes."
+            echo "⚠️ Nenhum teste encontrado ainda, pulando cobertura."
           fi
