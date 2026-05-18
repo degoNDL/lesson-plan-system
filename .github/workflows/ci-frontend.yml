@@ -21,7 +21,13 @@ jobs:
           node-version: "20"
 
       - name: Instalar dependências
-        run: npm ci
+        run: |
+          if [ -f "package.json" ]; then
+            npm ci
+          else
+            echo "⚠ package.json ainda não existe, pulando frontend CI."
+            exit 0
+          fi
 
       - name: ESLint
         run: npm run lint
