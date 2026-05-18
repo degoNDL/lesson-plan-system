@@ -1,0 +1,11 @@
+flask
+flask-sqlalchemy
+flask-cors
+flask-migrate
+marshmallow
+python-dotenv
+groq
+pytest
+pytest-cov
+ruff
+black
