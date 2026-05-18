@@ -126,12 +126,14 @@ def test_filtro_por_disciplina(client):
     ]:
         client.post(
             "/lesson-plans/",
-            data=json.dumps({
-                "titulo": titulo,
-                "objetivo": "Objetivo teste",
-                "ementa": "Ementa teste",
-                "disciplina": disciplina,
-            }),
+            data=json.dumps(
+                {
+                    "titulo": titulo,
+                    "objetivo": "Objetivo teste",
+                    "ementa": "Ementa teste",
+                    "disciplina": disciplina,
+                }
+            ),
             content_type="application/json",
         )
 
