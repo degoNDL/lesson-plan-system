@@ -1,7 +1,7 @@
 import logging
 from flask import Flask, jsonify
 from app.config import config
-from app.extensions import db
+from app.extensions import db, cors
 from app.exceptions import (
     LessonPlanNotFoundError,
     SmartAssistError,
@@ -25,6 +25,7 @@ def create_app(config_name=None):
     app.config.from_object(config.get(config_name, config["default"]))
 
     db.init_app(app)
+    cors.init_app(app, origins=["http://localhost:5173"])
 
     with app.app_context():
         from app.models.lesson_plan import LessonPlan  # noqa: F401
