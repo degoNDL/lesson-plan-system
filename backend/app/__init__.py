@@ -27,10 +27,12 @@ def create_app(config_name=None):
     db.init_app(app)
 
     with app.app_context():
+        from app.models.lesson_plan import LessonPlan  # noqa: F401
+
         db.create_all()
 
-    # from app.routers.lesson_plans import bp as plans_bp
-    # app.register_blueprint(plans_bp)
+    from app.routers.lesson_plans import bp as plans_bp
+    app.register_blueprint(plans_bp)
 
     @app.get("/health")
     def health():
