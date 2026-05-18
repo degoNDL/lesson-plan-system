@@ -32,8 +32,10 @@ def create_app(config_name=None):
         db.create_all()
 
     from app.routers.lesson_plans import bp as plans_bp
+    from app.routers.smart_assist import bp as ai_bp
 
     app.register_blueprint(plans_bp)
+    app.register_blueprint(ai_bp)
 
     @app.get("/health")
     def health():
