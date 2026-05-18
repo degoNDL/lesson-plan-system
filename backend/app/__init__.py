@@ -32,6 +32,7 @@ def create_app(config_name=None):
         db.create_all()
 
     from app.routers.lesson_plans import bp as plans_bp
+
     app.register_blueprint(plans_bp)
 
     @app.get("/health")
