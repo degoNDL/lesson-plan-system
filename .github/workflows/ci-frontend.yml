@@ -3,6 +3,8 @@ name: Frontend CI
 on:
   push:
     branches: [main, dev]
+  pull_request:
+    branches: [main]
 
 jobs:
   lint-and-typecheck:
