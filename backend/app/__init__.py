@@ -17,6 +17,7 @@ logging.basicConfig(
 
 def create_app(config_name=None):
     import os
+
     if config_name is None:
         config_name = os.getenv("FLASK_ENV", "development")
 
