@@ -20,17 +20,24 @@ jobs:
         with:
           node-version: "20"
 
-      - name: Instalar dependências
+      - name: Verificar se frontend existe
+        id: check
         run: |
           if [ -f "package.json" ]; then
-            npm ci
+            echo "exists=true" >> $GITHUB_OUTPUT
           else
-            echo "⚠ package.json ainda não existe, pulando frontend CI."
-            exit 0
+            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "⚠️ Frontend ainda não configurado, pulando CI."
           fi
 
+      - name: Instalar dependências
+        if: steps.check.outputs.exists == 'true'
+        run: npm ci
+
       - name: ESLint
+        if: steps.check.outputs.exists == 'true'
         run: npm run lint
 
       - name: TypeScript
+        if: steps.check.outputs.exists == 'true'
         run: npm run type-check
