@@ -1,6 +1,7 @@
 # Projeto
 *.db
 .env
+.claude/
 .env.local
 node_modules/
 .vscode/
