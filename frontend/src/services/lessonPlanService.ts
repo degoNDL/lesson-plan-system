@@ -44,3 +44,14 @@ export async function updateLessonPlan(
 export async function deleteLessonPlan(id: string): Promise<void> {
   await axios.delete(`${API_URL}/lesson-plans/${id}`);
 }
+
+export interface LessonPlanMeta {
+  titulos: string[];
+  disciplinas: string[];
+  tags: string[];
+}
+
+export async function getLessonPlanMeta(): Promise<LessonPlanMeta> {
+  const response = await axios.get(`${API_URL}/lesson-plans/meta`);
+  return response.data;
+}

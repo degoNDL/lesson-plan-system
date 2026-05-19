@@ -4,9 +4,11 @@ import {
   createLessonPlan,
   updateLessonPlan,
   getLessonPlanById,
+  getLessonPlanMeta,
 } from '../services/lessonPlanService';
 import { getRecommendations } from '../services/smartAssistService';
 import type { LessonPlan } from '../types/lessonPlan';
+import AutocompleteInput from '../components/AutocompleteInput';
 
 interface FormData {
   titulo: string;
@@ -41,6 +43,11 @@ export default function FormPage() {
   const [error, setError] = useState<string | null>(null);
   const [aiError, setAiError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const [metaDisciplinas, setMetaDisciplinas] = useState<string[]>([]);
+
+  useEffect(() => {
+    getLessonPlanMeta().then((meta) => setMetaDisciplinas(meta.disciplinas));
+  }, []);
 
   useEffect(() => {
     if (isEditing && id) {
@@ -101,6 +108,7 @@ export default function FormPage() {
     try {
       const payload = {
         ...form,
+        objetivo: form.objetivo || null,
         data_prevista: form.data_prevista || null,
         conteudos: form.conteudos || null,
         recursos_apoio: form.recursos_apoio || null,
@@ -161,13 +169,14 @@ export default function FormPage() {
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Disciplina *
             </label>
-            <input
+            <AutocompleteInput
               name="disciplina"
               value={form.disciplina}
-              onChange={handleChange}
+              onChange={(val) => setForm((prev) => ({ ...prev, disciplina: val }))}
+              options={metaDisciplinas}
               required
-              className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="Ex: Programação"
+              className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -208,13 +217,12 @@ export default function FormPage() {
           {/* Objetivo */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Objetivo *
+              Objetivo
             </label>
             <textarea
               name="objetivo"
               value={form.objetivo}
               onChange={handleChange}
-              required
               rows={2}
               className="w-full border rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               placeholder="O que o aluno vai aprender?"

@@ -59,3 +59,24 @@ def delete(lesson_plan_id):
     plan = get_by_id(lesson_plan_id)
     plan.deleted_at = datetime.utcnow()
     db.session.commit()
+
+
+def get_meta():
+    rows = (
+        db.session.query(LessonPlan.titulo, LessonPlan.disciplina, LessonPlan.tags)
+        .filter(LessonPlan.deleted_at.is_(None))
+        .all()
+    )
+
+    titulos = sorted({r.titulo for r in rows if r.titulo})
+    disciplinas = sorted({r.disciplina for r in rows if r.disciplina})
+
+    tags = set()
+    for r in rows:
+        if r.tags:
+            for t in r.tags.split(","):
+                t = t.strip()
+                if t:
+                    tags.add(t)
+
+    return {"titulos": titulos, "disciplinas": disciplinas, "tags": sorted(tags)}

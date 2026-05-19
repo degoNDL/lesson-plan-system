@@ -12,7 +12,7 @@ class LessonPlan(db.Model):
         default=lambda: str(uuid.uuid4()),
     )
     titulo = db.Column(db.String(255), nullable=False)
-    objetivo = db.Column(db.Text, nullable=False)
+    objetivo = db.Column(db.Text, nullable=True)
     ementa = db.Column(db.Text, nullable=False)
     data_prevista = db.Column(db.Date, nullable=True)
     disciplina = db.Column(db.String(100), nullable=False)

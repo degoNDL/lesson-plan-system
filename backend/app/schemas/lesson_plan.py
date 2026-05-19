@@ -4,7 +4,7 @@ from marshmallow import Schema, fields, validate
 class LessonPlanSchema(Schema):
     id = fields.Str(dump_only=True)
     titulo = fields.Str(required=True, validate=validate.Length(min=3, max=255))
-    objetivo = fields.Str(required=True, validate=validate.Length(min=5))
+    objetivo = fields.Str(load_default=None, allow_none=True)
     ementa = fields.Str(required=True, validate=validate.Length(min=5))
     data_prevista = fields.Date(allow_none=True, load_default=None)
     disciplina = fields.Str(required=True, validate=validate.Length(min=2, max=100))

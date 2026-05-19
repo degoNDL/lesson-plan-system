@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getLessonPlans, deleteLessonPlan } from '../services/lessonPlanService';
+import { getLessonPlans, deleteLessonPlan, getLessonPlanMeta } from '../services/lessonPlanService';
 import type { LessonPlan, PaginatedResponse } from '../types/lessonPlan';
+import AutocompleteInput from '../components/AutocompleteInput';
 
 export default function ListPage() {
   const navigate = useNavigate();
@@ -13,7 +14,11 @@ export default function ListPage() {
   const [disciplina, setDisciplina] = useState('');
   const [tag, setTag] = useState('');
   const [orderBy, setOrderBy] = useState<'titulo' | 'criado_em'>('criado_em');
+  const [dataPrevista, setDataPrevista] = useState('');
   const [page, setPage] = useState(1);
+  const [metaTitulos, setMetaTitulos] = useState<string[]>([]);
+  const [metaDisciplinas, setMetaDisciplinas] = useState<string[]>([]);
+  const [metaTags, setMetaTags] = useState<string[]>([]);
 
   async function fetchPlans() {
     setLoading(true);
@@ -24,6 +29,7 @@ export default function ListPage() {
         titulo,
         disciplina,
         tag,
+        data_prevista: dataPrevista || undefined,
         order_by: orderBy,
       });
       setData(result);
@@ -37,6 +43,14 @@ export default function ListPage() {
   useEffect(() => {
     fetchPlans();
   }, [page, orderBy]);
+
+  useEffect(() => {
+    getLessonPlanMeta().then((meta) => {
+      setMetaTitulos(meta.titulos);
+      setMetaDisciplinas(meta.disciplinas);
+      setMetaTags(meta.tags);
+    });
+  }, []);
 
   async function handleDelete(id: string) {
     if (!confirm('Deseja excluir este plano?')) return;
@@ -62,39 +76,68 @@ export default function ListPage() {
         </div>
 
         {/* Filtros */}
-        <div className="bg-white p-4 rounded shadow mb-4 grid grid-cols-2 gap-3 md:grid-cols-4">
-          <input
-            placeholder="Buscar por título..."
-            value={titulo}
-            onChange={(e) => setTitulo(e.target.value)}
-            className="border rounded px-3 py-2 text-sm"
-          />
-          <input
-            placeholder="Filtrar por disciplina..."
-            value={disciplina}
-            onChange={(e) => setDisciplina(e.target.value)}
-            className="border rounded px-3 py-2 text-sm"
-          />
-          <input
-            placeholder="Filtrar por tag..."
-            value={tag}
-            onChange={(e) => setTag(e.target.value)}
-            className="border rounded px-3 py-2 text-sm"
-          />
-          <select
-            value={orderBy}
-            onChange={(e) => setOrderBy(e.target.value as 'titulo' | 'criado_em')}
-            className="border rounded px-3 py-2 text-sm"
-          >
-            <option value="criado_em">Ordenar por data</option>
-            <option value="titulo">Ordenar por título</option>
-          </select>
-          <button
-            onClick={() => { setPage(1); fetchPlans(); }}
-            className="col-span-2 md:col-span-4 bg-gray-700 text-white px-4 py-2 rounded hover:bg-gray-800 text-sm"
-          >
-            Buscar
-          </button>
+        <div className="bg-white p-4 rounded shadow mb-4 space-y-3">
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+            <AutocompleteInput
+              value={titulo}
+              onChange={setTitulo}
+              onClear={() => setTitulo('')}
+              options={metaTitulos}
+              placeholder="Buscar por título..."
+              className="border rounded px-3 py-2 text-sm w-full"
+            />
+            <AutocompleteInput
+              value={disciplina}
+              onChange={setDisciplina}
+              onClear={() => setDisciplina('')}
+              options={metaDisciplinas}
+              placeholder="Filtrar por disciplina..."
+              className="border rounded px-3 py-2 text-sm w-full"
+            />
+            <AutocompleteInput
+              value={tag}
+              onChange={setTag}
+              onClear={() => setTag('')}
+              options={metaTags}
+              placeholder="Filtrar por tag..."
+              className="border rounded px-3 py-2 text-sm w-full"
+            />
+            <div className="relative">
+              <input
+                type="date"
+                value={dataPrevista}
+                onChange={(e) => setDataPrevista(e.target.value)}
+                className={`border rounded px-3 py-2 text-sm w-full ${dataPrevista ? 'pr-7' : ''}`}
+                title="Filtrar por data prevista"
+              />
+              {dataPrevista && (
+                <button
+                  type="button"
+                  onClick={() => setDataPrevista('')}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 text-xs leading-none"
+                  tabIndex={-1}
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          </div>
+          <div className="flex items-center justify-between gap-3">
+            <select
+              value={orderBy}
+              onChange={(e) => setOrderBy(e.target.value as 'titulo' | 'criado_em')}
+              className="border rounded px-3 py-2 text-sm"
+            >
+              <option value="criado_em">Ordenar por data</option>
+              <option value="titulo">Ordenar por título</option>
+            </select>
+            <button
+              onClick={() => { setPage(1); fetchPlans(); }}
+              className="bg-gray-700 text-white px-6 py-2 rounded hover:bg-gray-800 text-sm font-medium"
+            >
+              Buscar
+            </button>
+          </div>
         </div>
 
         {/* Conteúdo */}
