@@ -10,6 +10,12 @@ schema_many = LessonPlanSchema(many=True)
 update_schema = LessonPlanUpdateSchema()
 
 
+@bp.get("/meta")
+def meta():
+    data = service.get_meta()
+    return jsonify(data)
+
+
 @bp.get("/")
 def list_plans():
     page = request.args.get("page", 1, type=int)
