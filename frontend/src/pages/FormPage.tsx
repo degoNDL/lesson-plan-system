@@ -64,7 +64,7 @@ export default function FormPage() {
         });
       });
     }
-  }, [id]);
+  }, [id, isEditing]);
 
   function handleChange(
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>

@@ -41,7 +41,9 @@ export default function ListPage() {
   }
 
   useEffect(() => {
-    fetchPlans();
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchPlans();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, orderBy]);
 
   useEffect(() => {
